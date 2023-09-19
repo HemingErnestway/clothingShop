@@ -31,21 +31,22 @@ func main() {
 	}
 	fmt.Printf("User %s\n\n", string(userJSON))
 
-	product := entities.Product{
-		Uuid:         uuid.New(),
-		Category:     "Обувь",
-		Color:        "Черный",
-		Season:       "Лето",
-		Size:         "44",
-		Manufacturer: "Россия",
-		Brand:        "Adidas",
-		Gender:       entities.Male,
-		Age:          "Adult",
-		PriceRoubles: 3299.90,
-	}
-	productJSON, err := json.MarshalIndent(product, "", "  ")
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-	fmt.Printf("Product %s\n\n", string(productJSON))
+	//TODO: think about linking properties!
+	//product := entities.Product{
+	//	Uuid:         uuid.New(),
+	//	Category:     "Обувь",
+	//	Color:        "Черный",
+	//	Season:       "Лето",
+	//	Size:         "44",
+	//	Manufacturer: "Россия",
+	//	Brand:        "Adidas",
+	//	Gender:       entities.Male,
+	//	Age:          "Adult",
+	//	PriceRoubles: 3299.90,
+	//}
+	//productJSON, err := json.MarshalIndent(product, "", "  ")
+	//if err != nil {
+	//	log.Fatalf(err.Error())
+	//}
+	//fmt.Printf("Product %s\n\n", string(productJSON))
 }

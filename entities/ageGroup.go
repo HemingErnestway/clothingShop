@@ -2,7 +2,7 @@ package entities
 
 import "github.com/google/uuid"
 
-type Brand struct {
+type AgeGroup struct {
 	Uuid uuid.UUID
 	Name string
 }

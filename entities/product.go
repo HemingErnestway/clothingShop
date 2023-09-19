@@ -10,14 +10,14 @@ const (
 )
 
 type Product struct {
-	Uuid         uuid.UUID
-	Category     string
-	Color        string
-	Season       string
-	Size         string
-	Manufacturer string
-	Brand        string
-	Gender       Gender
-	Age          string
-	PriceRoubles float64
+	Uuid           uuid.UUID
+	CategoryId     uuid.UUID
+	ColorId        uuid.UUID
+	SeasonId       uuid.UUID
+	SizeId         uuid.UUID
+	ManufacturerId uuid.UUID
+	BrandId        uuid.UUID
+	Gender         Gender
+	AgeGroupId     uuid.UUID
+	PriceRoubles   float64
 }

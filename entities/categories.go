@@ -1,7 +1,8 @@
 package entities
 
+import "github.com/google/uuid"
+
 type Categories struct {
-	Uuid    Uuid
-	Name    string
-	
+	Uuid uuid.UUID
+	Name string
 }
