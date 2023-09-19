@@ -5,9 +5,6 @@ import (
 	"time"
 )
 
-type UUID [4]uint
-type Date [3]uint
-
 type User struct {
 	Uuid        uuid.UUID
 	Name        string

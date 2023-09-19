@@ -1,7 +1,7 @@
 package main
 
 import (
-	"awesomeProject/entities"
+	"clothingShop/entities"
 	"encoding/json"
 	"github.com/google/uuid"
 	"log"
@@ -13,8 +13,10 @@ import (
 func main() {
 	fmt.Println("Смирнов Антон Леонидович")
 	fmt.Println("Интернет-магазин одежды\n")
+
 	bdate, _ := time.Parse("02.01.2006", "01.12.1992")
-	customer := entities.Customer{
+
+	user := entities.User{
 		Uuid:        uuid.New(),
 		Name:        "Иван",
 		Surname:     "Иванов",
@@ -22,28 +24,18 @@ func main() {
 		Address:     "Россия, Московская обл, Долгопрудный, ул Пушкина, 143, 53",
 		BonusPoints: 200,
 		BirthDate:   bdate,
+		Login:       "ivanroflan",
+		Password:    "qwertyuiop123",
+		Access:      1,
 	}
-	customerJSON, err := json.MarshalIndent(customer, "", "  ")
+	userJSON, err := json.MarshalIndent(user, "", "  ")
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	fmt.Printf("Customer %s\n\n", string(customerJSON))
-
-	administrator := entities.Administrator{
-		Uuid:    entities.UUID{2222, 3333, 1111, 4444},
-		Name:    "Петр",
-		Surname: "Петрович",
-		Email:   "petrovpetr@gmail.com",
-		Address: "Россия, Московская обл, Долгопрудный, ул Колотушкина, 53, 123",
-	}
-	administratorJSON, err := json.MarshalIndent(administrator, "", "  ")
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-	fmt.Printf("Administrator %s\n\n", string(administratorJSON))
+	fmt.Printf("User %s\n\n", string(userJSON))
 
 	product := entities.Product{
-		Uuid:         entities.UUID{1234, 1234, 1234, 1234},
+		Uuid:         uuid.New(),
 		Category:     "Обувь",
 		Color:        "Черный",
 		Season:       "Лето",
@@ -58,5 +50,5 @@ func main() {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	fmt.Printf("Administrator %s\n\n", string(productJSON))
+	fmt.Printf("Product %s\n\n", string(productJSON))
 }

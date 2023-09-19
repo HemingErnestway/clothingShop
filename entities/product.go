@@ -1,5 +1,7 @@
 package entities
 
+import "github.com/google/uuid"
+
 type Gender string
 
 const (
@@ -8,7 +10,7 @@ const (
 )
 
 type Product struct {
-	Uuid         UUID
+	Uuid         uuid.UUID
 	Category     string
 	Color        string
 	Season       string
