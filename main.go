@@ -11,14 +11,6 @@ import (
 )
 
 func main() {
-	fmt.Println("Смирнов Антон Леонидович")
-	fmt.Println("Интернет-магазин одежды\n")
-	fmt.Println("Интернет-магазин одежды\n")
-	fmt.Println("Интернет-магазин одежды\n")
-	fmt.Println("Интернет-магазин одежды\n")
-	fmt.Println("Интернет-магазин одежды\n")
-	fmt.Println("Интернет-магазин одежды\n")
-
 	bdate, _ := time.Parse("02.01.2006", "01.12.1992")
 
 	user := entities.User{
