@@ -2,12 +2,11 @@ package main
 
 import (
 	"clothingShop/entities"
-	"encoding/json"
 	"github.com/google/uuid"
+	"github.com/gorilla/mux"
 	"log"
+	"net/http"
 	"time"
-
-	"fmt"
 )
 
 func main() {
@@ -25,63 +24,81 @@ func main() {
 		Password:    "qwertyuiop123",
 		Access:      1,
 	}
-	userJSON, err := json.MarshalIndent(user, "", "  ")
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-	fmt.Printf("User %s\n\n", string(userJSON))
 
-	shoesCategory := entities.Category{
-		Uuid: uuid.New(),
-		Name: "Обувь",
-	}
+	userMap := map[string]entities.User{}
+	userMap[user.Login] = user
 
-	blackColor := entities.Color{
-		Uuid: uuid.New(),
-		Name: "black",
+	rtr := mux.NewRouter()
+
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		params := mux.Vars(r)
+		login := params["login"]
+		w.Write([]byte(userMap[login].Address)) // TODO: wrap to json
 	}
 
-	summerSeason := entities.Season{
-		Uuid: uuid.New(),
-		Name: "Лето",
-	}
+	rtr.HandleFunc("/user/{login}", handler).Methods("GET")
 
-	fourtyFourSize := entities.Size{
-		Uuid: uuid.New(),
-		Name: "44",
-	}
+	http.Handle("/", rtr)
 
-	russiaManufacturer := entities.Manufacturer{
-		Uuid: uuid.New(),
-		Name: "Россия",
-	}
+	log.Println("Listening...")
+	http.ListenAndServe(":3000", nil)
 
-	adidasBrand := entities.Brand{
-		Uuid: uuid.New(),
-		Name: "Adidas",
-	}
-
-	adultAgeGroup := entities.AgeGroup{
-		Uuid: uuid.New(),
-		Name: "Adult",
-	}
-
-	product := entities.Product{
-		Uuid:           uuid.New(),
-		CategoryId:     shoesCategory.Uuid,
-		ColorId:        blackColor.Uuid,
-		SeasonId:       summerSeason.Uuid,
-		SizeId:         fourtyFourSize.Uuid,
-		ManufacturerId: russiaManufacturer.Uuid,
-		BrandId:        adidasBrand.Uuid,
-		Gender:         entities.Male,
-		AgeGroupId:     adultAgeGroup.Uuid,
-		PriceRoubles:   3299.90,
-	}
-	productJSON, err := json.MarshalIndent(product, "", "  ")
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-	fmt.Printf("Product %s\n\n", string(productJSON))
-	fmt.Println()
+	//userJSON, err := json.MarshalIndent(user, "", "  ")
+	//if err != nil {
+	//	log.Fatalf(err.Error())
+	//}
+	//fmt.Printf("User %s\n\n", string(userJSON))
+	//
+	//shoesCategory := entities.Category{
+	//	Uuid: uuid.New(),
+	//	Name: "Обувь",
+	//}
+	//
+	//blackColor := entities.Color{
+	//	Uuid: uuid.New(),
+	//	Name: "black",
+	//}
+	//
+	//summerSeason := entities.Season{
+	//	Uuid: uuid.New(),
+	//	Name: "Лето",
+	//}
+	//
+	//fourtyFourSize := entities.Size{
+	//	Uuid: uuid.New(),
+	//	Name: "44",
+	//}
+	//
+	//russiaManufacturer := entities.Manufacturer{
+	//	Uuid: uuid.New(),
+	//	Name: "Россия",
+	//}
+	//
+	//adidasBrand := entities.Brand{
+	//	Uuid: uuid.New(),
+	//	Name: "Adidas",
+	//}
+	//
+	//adultAgeGroup := entities.AgeGroup{
+	//	Uuid: uuid.New(),
+	//	Name: "Adult",
+	//}
+	//
+	//product := entities.Product{
+	//	Uuid:           uuid.New(),
+	//	CategoryId:     shoesCategory.Uuid,
+	//	ColorId:        blackColor.Uuid,
+	//	SeasonId:       summerSeason.Uuid,
+	//	SizeId:         fourtyFourSize.Uuid,
+	//	ManufacturerId: russiaManufacturer.Uuid,
+	//	BrandId:        adidasBrand.Uuid,
+	//	Gender:         entities.Male,
+	//	AgeGroupId:     adultAgeGroup.Uuid,
+	//	PriceRoubles:   3299.90,
+	//}
+	//productJSON, err := json.MarshalIndent(product, "", "  ")
+	//if err != nil {
+	//	log.Fatalf(err.Error())
+	//}
+	//fmt.Printf("Product %s\n\n", string(productJSON))
 }
