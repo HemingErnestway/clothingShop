@@ -2,6 +2,8 @@ package main
 
 import (
 	"clothingShop/entities"
+	"encoding/json"
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"log"
@@ -25,15 +27,21 @@ func main() {
 		Access:      1,
 	}
 
-	userMap := map[string]entities.User{}
-	userMap[user.Login] = user
+	userJSON, err := json.MarshalIndent(user, "", "  ")
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	fmt.Printf("User %s\n\n", string(userJSON))
+
+	userMap := map[string]string{}
+	userMap[user.Login] = string(userJSON)
 
 	rtr := mux.NewRouter()
 
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		login := params["login"]
-		w.Write([]byte(userMap[login].Address)) // TODO: wrap to json
+		w.Write([]byte(userMap[login]))
 	}
 
 	rtr.HandleFunc("/user/{login}", handler).Methods("GET")
@@ -43,11 +51,6 @@ func main() {
 	log.Println("Listening...")
 	http.ListenAndServe(":3000", nil)
 
-	//userJSON, err := json.MarshalIndent(user, "", "  ")
-	//if err != nil {
-	//	log.Fatalf(err.Error())
-	//}
-	//fmt.Printf("User %s\n\n", string(userJSON))
 	//
 	//shoesCategory := entities.Category{
 	//	Uuid: uuid.New(),
