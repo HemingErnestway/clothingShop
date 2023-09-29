@@ -2,10 +2,11 @@ package main
 
 import (
 	"clothingShop/entities"
-	"encoding/json"
-	"fmt"
+
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/gorilla/mux"
+
+	"encoding/json"
 	"log"
 	"net/http"
 	"time"
@@ -31,25 +32,18 @@ func main() {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	fmt.Printf("User %s\n\n", string(userJSON))
 
 	userMap := map[string]string{}
 	userMap[user.Login] = string(userJSON)
 
-	rtr := mux.NewRouter()
-
-	handler := func(w http.ResponseWriter, r *http.Request) {
-		params := mux.Vars(r)
-		login := params["login"]
-		w.Write([]byte(userMap[login]))
-	}
-
-	rtr.HandleFunc("/user/{login}", handler).Methods("GET")
-
-	http.Handle("/", rtr)
-
-	log.Println("Listening...")
-	http.ListenAndServe(":3000", nil)
+	r := gin.Default()
+	r.GET("/", func(c *gin.Context) {
+		//var v interface{}
+		//json.Unmarshal(userJSON, &v)
+		//data := v.(map[string]interface{})
+		c.Data(http.StatusOK, gin.MIMEJSON, userJSON)
+	})
+	r.Run()
 
 	//
 	//shoesCategory := entities.Category{
