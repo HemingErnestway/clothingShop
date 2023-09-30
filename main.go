@@ -37,12 +37,19 @@ func main() {
 	userMap[user.Login] = string(userJSON)
 
 	r := gin.Default()
-	r.GET("/", func(c *gin.Context) {
+
+	r.GET("/test", func(c *gin.Context) {
 		//var v interface{}
 		//json.Unmarshal(userJSON, &v)
 		//data := v.(map[string]interface{})
 		c.Data(http.StatusOK, gin.MIMEJSON, userJSON)
 	})
+
+	r.GET("/echo/:name", func(c *gin.Context) {
+		name := c.Param("name")
+		c.String(http.StatusOK, name)
+	})
+
 	r.Run()
 
 	//
