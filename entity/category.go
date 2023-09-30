@@ -1,8 +1,8 @@
-package entities
+package entity
 
 import "github.com/google/uuid"
 
-type AgeGroup struct {
+type Category struct {
 	Uuid uuid.UUID
 	Name string
 }

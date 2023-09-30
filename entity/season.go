@@ -1,8 +1,8 @@
-package entities
+package entity
 
 import "github.com/google/uuid"
 
-type Category struct {
+type Season struct {
 	Uuid uuid.UUID
 	Name string
 }
