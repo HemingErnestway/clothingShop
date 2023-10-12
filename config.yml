@@ -1,0 +1,46 @@
+server:
+  port: ${SERVER.PORT:8080}
+  timeout: ${SERVER.TIMEOUT:10}
+api:
+  UserCreate:
+    method: POST
+    url: user
+  UserUpdate:
+    method: PUT
+    url: user/{id}
+  UserDelete:
+    method: DELETE
+    url: user/{id}
+  UserRead:
+    method: GET
+    url: user/{id}
+  UsersRead:
+    method: GET
+    url: user
+  ProductCreate:
+    method: POST
+    url: product
+  ProductUpdate:
+    method: PUT
+    url: product/{id}
+  ProductDelete:
+    method: DELETE
+    url: product/{id}
+  ProductRead:
+    method: GET
+    url: product/{id}
+  ProductsRead:
+    method: GET
+    url: product
+  CartCreate:
+    method: POST
+    url: cart
+  CartUpdate:
+    method: PUT
+    url: cart/{id}
+  CartDelete:
+    method: DELETE
+    url: cart/{id}
+  CartRead:
+    method: GET
+    url: cart/{id}
