@@ -10,7 +10,7 @@ const (
 )
 
 type Product struct {
-	Uuid           uuid.UUID
+	Uuid           uint32
 	CategoryId     uuid.UUID
 	ColorId        uuid.UUID
 	SeasonId       uuid.UUID
