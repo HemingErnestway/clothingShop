@@ -5,47 +5,25 @@ import (
 	"clothingShop/entity"
 	"clothingShop/storage"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
-//type UserCreateRequestBody struct {
-//	name     string
-//	surname  string
-//	email    string
-//	login    string
-//	password string
-//}
-//
-//func (h *Handler) UserCreate(ctx engine.Context) {
-//	var requestBody UserCreateRequestBody
-//	if err := c.BindJSON(&requestBody); err != nil {
-//		// DO SOMETHING WITH THE ERROR
-//	}
-//	birthDate, _ := time.Parse("02.01.2006", c.Param("bdate"))
-//	usr := entity.User{
-//		Name:        requestBody.name,
-//		Surname:     requestBody.surname,
-//		Email:       requestBody.email,
-//		Address:     "",
-//		BonusPoints: 0,
-//		BirthDate:   birthDate,
-//		Login:       requestBody.login,
-//		Password:    requestBody.password,
-//		Access:      0,
-//	}
-//	storage.UserNew(usr)
-//}
-
-func (h *Handler) UserCreate(ctx engine.Context) {
+func (h *Handler) UserCreate(ctx *engine.Context) {
 	decoder := json.NewDecoder(ctx.Request.Body)
 	var user entity.User
 	if err := decoder.Decode(&user); err != nil {
+		fmt.Println("Error", err)
 		ctx.Error(http.StatusBadRequest, err.Error())
 		return
 	}
-	ctx.Print(storage.UserCreate(user))
+	user.Access = 0
+	user.BonusPoints = 0
+	userS := storage.UserCreate(user)
+	fmt.Println("UserCreate", user, userS)
+	ctx.Print(userS)
 }
 
 func (h *Handler) UserRead(ctx *engine.Context) {

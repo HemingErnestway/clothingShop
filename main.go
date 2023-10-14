@@ -11,7 +11,7 @@ func main() {
 	m.Handle("/", http.HandlerFunc(mainHandle))
 
 	server := &http.Server{
-		Addr:         ":8080",
+		Addr:         ":8090",
 		Handler:      m,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
@@ -19,6 +19,6 @@ func main() {
 
 	err := server.ListenAndServe()
 	if err != nil {
-		return
+		panic(err)
 	}
 }

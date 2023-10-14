@@ -15,6 +15,7 @@ var apiMap map[string]map[string]reflect.Value
 
 func init() {
 	cfg := config.Get()
+	apiMap = make(map[string]map[string]reflect.Value)
 	apiMap["POST"] = make(map[string]reflect.Value)
 	apiMap["PUT"] = make(map[string]reflect.Value)
 	apiMap["DELETE"] = make(map[string]reflect.Value)
@@ -63,11 +64,11 @@ func mainHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	last := pathArr[(len(pathArr) - 1)]
-	str := last[strings.LastIndex(last, "."):]
-	if len(last) > 3 && types[str] {
-		sendFile("tpl/index.html", ctx)
-	}
+	//last := pathArr[(len(pathArr) - 1)]
+	//str := last[strings.LastIndex(last, "."):]
+	//if len(last) > 3 && types[str] {
+	//	sendFile("tpl/index.html", ctx)
+	//}
 
 	maps, ok := apiMap[r.Method]
 	if !ok {
@@ -81,6 +82,7 @@ func mainHandle(w http.ResponseWriter, r *http.Request) {
 	if fun, ok := maps[pathName]; ok {
 		in := make([]reflect.Value, 1)
 		in[0] = reflect.ValueOf(&ctx)
+		//fmt.Println(pathName)
 		fun.Call(in)
 	}
 }

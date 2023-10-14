@@ -45,10 +45,12 @@ func init() {
 
 func UserCreate(user entity.User) *entity.User {
 	userMx.mtx.Lock()
-	defer userMx.mtx.Lock()
+	defer userMx.mtx.Unlock()
+
 	userMx.iter++
 	user.Uuid = userMx.iter
 	userMx.users[userMx.iter] = user
+
 	return &user
 }
 

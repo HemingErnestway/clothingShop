@@ -25,7 +25,7 @@ func (c *Context) Error(status int, msg string) {
 }
 
 func (c *Context) Print(data any) {
-	c.Response.Header().Set("Content-Type", "")
+	c.Response.Header().Set("Content-Type", "application/json")
 	dataMarshal, _ := json.Marshal(data)
 	c.Response.Write(dataMarshal)
 }

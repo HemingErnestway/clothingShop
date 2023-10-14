@@ -1,5 +1,5 @@
 server:
-  port: ${SERVER.PORT:8080}
+  port: ${SERVER.PORT:8090}
   timeout: ${SERVER.TIMEOUT:10}
 api:
   UserCreate:
