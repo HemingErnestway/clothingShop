@@ -1,31 +1,9 @@
-//package storage
-//
-//import (
-//	"clothingShop/entity"
-//	"github.com/google/uuid"
-//)
-//
-//var users map[string]entity.User
-//
-//func init() {
-//	users = make(map[string]entity.User, 0)
-//}
-//
-//func UserNew(u entity.User) *entity.User {
-//	u.Uuid = uuid.New()
-//	users[u.Login] = u
-//	return &u
-//}
-//
-//func UserFind(login string) *entity.User {
-//	u := users[login]
-//	return &u
-//}
-
 package storage
 
 import (
+	"clothingShop/dto"
 	"clothingShop/entity"
+	"reflect"
 	"sync"
 )
 
@@ -54,23 +32,88 @@ func UserCreate(user entity.User) *entity.User {
 	return &user
 }
 
-func UserGetAll() []entity.User {
-	userMx.mtx.RLocker()
-	defer userMx.mtx.RUnlock()
-	lst := make([]entity.User, len(userMx.users))
-	iter := 0
-	for key := range userMx.users {
-		lst[iter] = userMx.users[key]
-		iter++
-	}
-	return lst
-}
-
-func UserGet(uid uint32) *entity.User {
+func UserRead(uid uint32) *entity.User {
 	userMx.mtx.RLock()
 	defer userMx.mtx.RUnlock()
+
 	if el, ok := userMx.users[uid]; ok {
 		return &el
 	}
+
 	return nil
+}
+
+func UsersRead() []entity.User {
+	userMx.mtx.RLock()
+	defer userMx.mtx.RUnlock()
+
+	userList := make([]entity.User, len(userMx.users))
+	iter := 0
+	for key := range userMx.users {
+		userList[iter] = userMx.users[key]
+		iter++
+	}
+
+	return userList
+}
+
+func UserUpdate(new dto.User, uid uint32) *entity.User {
+	userMx.mtx.Lock()
+	defer userMx.mtx.Unlock()
+
+	current := userMx.users[uid]
+	// TODO: consider refactoring using reflect
+	switch {
+	case new.Name != "":
+		current.Name = new.Name
+	case new.Surname != "":
+		current.Surname = new.Surname
+	case new.Email != "":
+		current.Email = new.Email
+	case new.Address != "":
+		current.Address = new.Address
+	case new.BonusPoints != 0:
+		current.BonusPoints = new.BonusPoints
+	case new.BirthDate != "":
+		current.BirthDate = new.BirthDate
+	case new.Login != "":
+		current.Login = new.Login
+	case new.Password != "":
+		current.Password = new.Password
+	case new.Access != 0:
+		current.Access = new.Access
+	}
+
+	for _, attr := range new.ClearAttr {
+		s := reflect.ValueOf(&current).Elem()
+		if s.Kind() == reflect.Struct {
+			field := s.FieldByName(attr)
+			if field.CanSet() {
+				if field.Kind() == reflect.Uint32 {
+					field.SetUint(0)
+				} else if field.Kind() == reflect.String {
+					field.SetString("")
+				}
+			}
+		}
+	}
+
+	userMx.users[uid] = current
+	return &current
+}
+
+func UserDelete(uid uint32) []entity.User {
+	userMx.mtx.Lock()
+	defer userMx.mtx.Unlock()
+
+	delete(userMx.users, uid)
+
+	userList := make([]entity.User, len(userMx.users))
+	iter := 0
+	for key := range userMx.users {
+		userList[iter] = userMx.users[key]
+		iter++
+	}
+
+	return userList
 }
