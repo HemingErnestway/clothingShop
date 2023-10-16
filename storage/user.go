@@ -32,11 +32,11 @@ func UserCreate(user entity.User) *entity.User {
 	return &user
 }
 
-func UserRead(uid uint32) *entity.User {
+func UserRead(id uint32) *entity.User {
 	userMx.mtx.RLock()
 	defer userMx.mtx.RUnlock()
 
-	if el, ok := userMx.users[uid]; ok {
+	if el, ok := userMx.users[id]; ok {
 		return &el
 	}
 
@@ -57,11 +57,11 @@ func UsersRead() []entity.User {
 	return userList
 }
 
-func UserUpdate(new dto.User, uid uint32) *entity.User {
+func UserUpdate(new dto.User, id uint32) *entity.User {
 	userMx.mtx.Lock()
 	defer userMx.mtx.Unlock()
 
-	current := userMx.users[uid]
+	current := userMx.users[id]
 	// TODO: consider refactoring using reflect
 	switch {
 	case new.Name != "":
@@ -98,15 +98,15 @@ func UserUpdate(new dto.User, uid uint32) *entity.User {
 		}
 	}
 
-	userMx.users[uid] = current
+	userMx.users[id] = current
 	return &current
 }
 
-func UserDelete(uid uint32) []entity.User {
+func UserDelete(id uint32) []entity.User {
 	userMx.mtx.Lock()
 	defer userMx.mtx.Unlock()
 
-	delete(userMx.users, uid)
+	delete(userMx.users, id)
 
 	userList := make([]entity.User, len(userMx.users))
 	iter := 0

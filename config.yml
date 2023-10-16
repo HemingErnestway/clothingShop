@@ -1,9 +1,16 @@
 server:
   port: ${SERVER.PORT:8090}
   timeout: ${SERVER.TIMEOUT:10}
+
 api:
   UserCreate:
     method: POST
+    url: user
+  UserRead:
+    method: GET
+    url: user/{id}
+  UsersRead:
+    method: GET
     url: user
   UserUpdate:
     method: PUT
@@ -11,14 +18,15 @@ api:
   UserDelete:
     method: DELETE
     url: user/{id}
-  UserRead:
-    method: GET
-    url: user/{id}
-  UsersRead:
-    method: GET
-    url: user
+
   ProductCreate:
     method: POST
+    url: product
+  ProductRead:
+    method: GET
+    url: product/{id}
+  ProductsRead:
+    method: GET
     url: product
   ProductUpdate:
     method: PUT
@@ -26,21 +34,16 @@ api:
   ProductDelete:
     method: DELETE
     url: product/{id}
-  ProductRead:
-    method: GET
-    url: product/{id}
-  ProductsRead:
-    method: GET
-    url: product
+
   CartCreate:
     method: POST
     url: cart
+  CartRead:
+    method: GET
+    url: cart/{id}
   CartUpdate:
     method: PUT
     url: cart/{id}
   CartDelete:
     method: DELETE
-    url: cart/{id}
-  CartRead:
-    method: GET
     url: cart/{id}

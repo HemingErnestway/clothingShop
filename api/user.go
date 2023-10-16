@@ -37,8 +37,8 @@ func (h *Handler) UserCreate(ctx *engine.Context) {
 }
 
 func (h *Handler) UserRead(ctx *engine.Context) {
-	uid := GetIdFromContext(ctx)
-	ctx.Print(storage.UserRead(uid))
+	id := GetIdFromContext(ctx)
+	ctx.Print(storage.UserRead(id))
 }
 
 func (h *Handler) UsersRead(ctx *engine.Context) {
@@ -53,11 +53,11 @@ func (h *Handler) UserUpdate(ctx *engine.Context) {
 		ctx.Error(http.StatusBadRequest, err.Error())
 		return
 	}
-	uid := GetIdFromContext(ctx)
-	ctx.Print(storage.UserUpdate(newFields, uid))
+	id := GetIdFromContext(ctx)
+	ctx.Print(storage.UserUpdate(newFields, id))
 }
 
 func (h *Handler) UserDelete(ctx *engine.Context) {
-	uid := GetIdFromContext(ctx)
-	ctx.Print(storage.UserDelete(uid))
+	id := GetIdFromContext(ctx)
+	ctx.Print(storage.UserDelete(id))
 }
