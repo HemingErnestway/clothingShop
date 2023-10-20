@@ -20,7 +20,6 @@ func init() {
 	apiMap["PUT"] = make(map[string]reflect.Value)
 	apiMap["DELETE"] = make(map[string]reflect.Value)
 	apiMap["GET"] = make(map[string]reflect.Value)
-	// FIXME: runtime error (assignment to entry in nil map)
 	maps := cfg.Api
 
 	types = make(map[string]bool)

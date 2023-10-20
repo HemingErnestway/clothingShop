@@ -30,9 +30,6 @@ func (h *Handler) UserCreate(ctx *engine.Context) {
 		ctx.Error(http.StatusBadRequest, err.Error())
 		return
 	}
-	user.Access = 0
-	user.BonusPoints = 0
-
 	ctx.Print(storage.UserCreate(user))
 }
 

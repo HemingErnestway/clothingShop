@@ -4,5 +4,5 @@ import "clothingShop/entity"
 
 type Cart struct {
 	entity.Cart
-	ClearAttr []string
+	ClearAttr []string `json:"clearAttr"`
 }

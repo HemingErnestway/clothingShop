@@ -89,11 +89,7 @@ func UserUpdate(new dto.User, id uint32) *entity.User {
 		if s.Kind() == reflect.Struct {
 			field := s.FieldByName(attr)
 			if field.CanSet() {
-				if field.Kind() == reflect.Uint32 {
-					field.SetUint(0)
-				} else if field.Kind() == reflect.String {
-					field.SetString("")
-				}
+				field.SetZero()
 			}
 		}
 	}
@@ -102,18 +98,11 @@ func UserUpdate(new dto.User, id uint32) *entity.User {
 	return &current
 }
 
-func UserDelete(id uint32) []entity.User {
+func UserDelete(id uint32) string {
 	userMx.mtx.Lock()
 	defer userMx.mtx.Unlock()
 
 	delete(userMx.users, id)
 
-	userList := make([]entity.User, len(userMx.users))
-	iter := 0
-	for key := range userMx.users {
-		userList[iter] = userMx.users[key]
-		iter++
-	}
-
-	return userList
+	return "successfully deleted"
 }

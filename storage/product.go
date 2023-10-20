@@ -2,6 +2,7 @@ package storage
 
 import (
 	"clothingShop/entity"
+	"reflect"
 	"sync"
 )
 
@@ -61,25 +62,49 @@ func ProductUpdate(new entity.Product, id uint32) *entity.Product {
 
 	current := productMx.products[id]
 	// TODO: consider refactoring using reflect
-	switch {
-	case new.CategoryId != 0:
-		current.CategoryId = new.CategoryId
-	case new.ColorId != 0:
-		current.ColorId = new.ColorId
-	case new.SeasonId != 0:
-		current.SeasonId = new.SeasonId
-	case new.SizeId != 0:
-		current.SizeId = new.SizeId
-	case new.ManufacturerId != 0:
-		current.ManufacturerId = new.ManufacturerId
-	case new.BrandId != 0:
-		current.BrandId = new.BrandId
-	case new.GenderId != 0:
-		current.GenderId = new.GenderId
-	case new.AgeGroupId != 0:
-		current.AgeGroupId = new.AgeGroupId
-	case new.PriceRoubles != 0.0:
-		current.PriceRoubles = new.PriceRoubles
+	//switch {
+	//case new.CategoryId != 0:
+	//	current.CategoryId = new.CategoryId
+	//case new.ColorId != 0:
+	//	current.ColorId = new.ColorId
+	//case new.SeasonId != 0:
+	//	current.SeasonId = new.SeasonId
+	//case new.SizeId != 0:
+	//	current.SizeId = new.SizeId
+	//case new.ManufacturerId != 0:
+	//	current.ManufacturerId = new.ManufacturerId
+	//case new.BrandId != 0:
+	//	current.BrandId = new.BrandId
+	//case new.GenderId != 0:
+	//	current.GenderId = new.GenderId
+	//case new.AgeGroupId != 0:
+	//	current.AgeGroupId = new.AgeGroupId
+	//case new.PriceRoubles != 0.0:
+	//	current.PriceRoubles = new.PriceRoubles
+	//}
+
+	currentStruct := reflect.ValueOf(&current).Elem()
+	newStruct := reflect.ValueOf(&new).Elem()
+	//if currentStruct.Kind() == reflect.Struct {
+	//	for i := 0; i < currentStruct.NumField(); i++ {
+	//		currentFieldName := currentStruct.Type().Field(i).Name
+	//		newFieldName := currentStruct.Type().Field(i).Name
+	//
+	//	}
+	//}
+	var fieldsToUpdate []string
+	if newStruct.Kind() == reflect.Struct {
+		for i := 0; i < newStruct.NumField(); i++ {
+			field := newStruct.Type().Field(i)
+			if !newStruct.FieldByName(field.Name).IsZero() {
+				fieldsToUpdate = append(fieldsToUpdate, field.Name)
+			}
+		}
+	}
+	for _,  := range fieldsToUpdate {
+		if currentStruct.Kind() == reflect.Struct {
+			oldFieldValue := currentStruct.FieldByName()
+		}
 	}
 
 	productMx.products[id] = current
