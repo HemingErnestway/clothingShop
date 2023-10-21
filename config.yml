@@ -47,3 +47,19 @@ api:
   CartDelete:
     method: DELETE
     url: cart/{id}
+
+  AgeGroupCreate:
+    method: POST
+    url: agegroup
+  AgeGroupRead:
+    method: GET
+    url: agegroup/{id}
+  AgeGroupsRead:
+    method: GET
+    url: agegroup
+  AgeGroupUpdate:
+    method: PUT
+    url: agegroup/{id}
+  AgeGroupDelete:
+    method: DELETE
+    url: agegroup/{id}
