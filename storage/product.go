@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"clothingShop/dto"
 	"clothingShop/entity"
 	"reflect"
 	"sync"
@@ -26,6 +27,7 @@ func ProductCreate(product entity.Product) *entity.Product {
 
 	productMx.iter++
 	product.Uuid = productMx.iter
+	product.DiscountPercent = calculateDiscount(&product)
 	productMx.products[productMx.iter] = product
 
 	return &product
@@ -56,73 +58,49 @@ func ProductsRead() []entity.Product {
 	return productList
 }
 
-func ProductUpdate(new entity.Product, id uint32) *entity.Product {
+func ProductUpdate(new dto.Product, id uint32) *entity.Product {
 	productMx.mtx.Lock()
 	defer productMx.mtx.Unlock()
 
 	current := productMx.products[id]
-	// TODO: consider refactoring using reflect
-	//switch {
-	//case new.CategoryId != 0:
-	//	current.CategoryId = new.CategoryId
-	//case new.ColorId != 0:
-	//	current.ColorId = new.ColorId
-	//case new.SeasonId != 0:
-	//	current.SeasonId = new.SeasonId
-	//case new.SizeId != 0:
-	//	current.SizeId = new.SizeId
-	//case new.ManufacturerId != 0:
-	//	current.ManufacturerId = new.ManufacturerId
-	//case new.BrandId != 0:
-	//	current.BrandId = new.BrandId
-	//case new.GenderId != 0:
-	//	current.GenderId = new.GenderId
-	//case new.AgeGroupId != 0:
-	//	current.AgeGroupId = new.AgeGroupId
-	//case new.PriceRoubles != 0.0:
-	//	current.PriceRoubles = new.PriceRoubles
-	//}
 
 	currentStruct := reflect.ValueOf(&current).Elem()
-	newStruct := reflect.ValueOf(&new).Elem()
-	//if currentStruct.Kind() == reflect.Struct {
-	//	for i := 0; i < currentStruct.NumField(); i++ {
-	//		currentFieldName := currentStruct.Type().Field(i).Name
-	//		newFieldName := currentStruct.Type().Field(i).Name
-	//
-	//	}
-	//}
-	var fieldsToUpdate []string
-	if newStruct.Kind() == reflect.Struct {
-		for i := 0; i < newStruct.NumField(); i++ {
-			field := newStruct.Type().Field(i)
-			if !newStruct.FieldByName(field.Name).IsZero() {
-				fieldsToUpdate = append(fieldsToUpdate, field.Name)
-			}
+	newStruct := reflect.ValueOf(&new.Product).Elem()
+
+	for i := 0; i < newStruct.NumField(); i++ {
+		newField := newStruct.Type().Field(i)
+		if !newStruct.FieldByName(newField.Name).IsZero() {
+			currentField := currentStruct.FieldByName(newField.Name)
+			currentField.Set(newStruct.FieldByName(newField.Name))
 		}
 	}
-	for _,  := range fieldsToUpdate {
-		if currentStruct.Kind() == reflect.Struct {
-			oldFieldValue := currentStruct.FieldByName()
+
+	for _, attr := range new.ClearAttr {
+		s := reflect.ValueOf(&current).Elem()
+		field := s.FieldByName(attr)
+		if field.CanSet() {
+			field.SetZero()
 		}
 	}
+
+	current.DiscountPercent = calculateDiscount(&current)
 
 	productMx.products[id] = current
 	return &current
 }
 
-func ProductDelete(id uint32) []entity.Product {
+func ProductDelete(id uint32) string {
 	productMx.mtx.Lock()
 	defer productMx.mtx.Unlock()
 
 	delete(productMx.products, id)
 
-	productList := make([]entity.Product, len(productMx.products))
-	iter := 0
-	for key := range productMx.products {
-		productList[iter] = productMx.products[key]
-		iter++
-	}
+	return "successfully deleted"
+}
 
-	return productList
+func calculateDiscount(product *entity.Product) uint8 {
+	if product.NewPrice == 0.0 {
+		return 0
+	}
+	return uint8(100 * (product.Price - product.NewPrice) / product.Price)
 }

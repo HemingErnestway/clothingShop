@@ -1,6 +1,7 @@
 package api
 
 import (
+	"clothingShop/dto"
 	"clothingShop/engine"
 	"clothingShop/entity"
 	"clothingShop/storage"
@@ -31,7 +32,7 @@ func (h *Handler) ProductsRead(ctx *engine.Context) {
 
 func (h *Handler) ProductUpdate(ctx *engine.Context) {
 	decoder := json.NewDecoder(ctx.Request.Body)
-	var newFields entity.Product
+	var newFields dto.Product
 	if err := decoder.Decode(&newFields); err != nil {
 		fmt.Println("Error", err)
 		ctx.Error(http.StatusBadRequest, err.Error())

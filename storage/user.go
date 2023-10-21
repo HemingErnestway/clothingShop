@@ -3,6 +3,7 @@ package storage
 import (
 	"clothingShop/dto"
 	"clothingShop/entity"
+	"fmt"
 	"reflect"
 	"sync"
 )
@@ -62,35 +63,24 @@ func UserUpdate(new dto.User, id uint32) *entity.User {
 	defer userMx.mtx.Unlock()
 
 	current := userMx.users[id]
-	// TODO: consider refactoring using reflect
-	switch {
-	case new.Name != "":
-		current.Name = new.Name
-	case new.Surname != "":
-		current.Surname = new.Surname
-	case new.Email != "":
-		current.Email = new.Email
-	case new.Address != "":
-		current.Address = new.Address
-	case new.BonusPoints != 0:
-		current.BonusPoints = new.BonusPoints
-	case new.BirthDate != "":
-		current.BirthDate = new.BirthDate
-	case new.Login != "":
-		current.Login = new.Login
-	case new.Password != "":
-		current.Password = new.Password
-	case new.Access != 0:
-		current.Access = new.Access
+
+	currentStruct := reflect.ValueOf(&current).Elem()
+	newStruct := reflect.ValueOf(&new.User).Elem()
+
+	for i := 0; i < newStruct.NumField(); i++ {
+		newField := newStruct.Type().Field(i)
+		if !newStruct.FieldByName(newField.Name).IsZero() {
+			fmt.Println(newField.Name)
+			currentField := currentStruct.FieldByName(newField.Name)
+			currentField.Set(newStruct.FieldByName(newField.Name))
+		}
 	}
 
 	for _, attr := range new.ClearAttr {
 		s := reflect.ValueOf(&current).Elem()
-		if s.Kind() == reflect.Struct {
-			field := s.FieldByName(attr)
-			if field.CanSet() {
-				field.SetZero()
-			}
+		field := s.FieldByName(attr)
+		if field.CanSet() {
+			field.SetZero()
 		}
 	}
 
