@@ -1,8 +1,6 @@
 package entity
 
-import "github.com/google/uuid"
-
 type Size struct {
-	Uuid uuid.UUID
+	Uuid uint32
 	Name string
 }

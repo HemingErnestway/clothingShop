@@ -48,21 +48,16 @@ func CartUpdate(new dto.Cart, id uint32) *entity.Cart {
 	defer cartMx.mtx.Unlock()
 
 	current := cartMx.carts[id]
-	// TODO: consider refactoring using reflect
-	switch {
-	case new.TotalPrice != 0.0:
+
+	if new.TotalPrice != 0.0 {
 		current.TotalPrice = new.TotalPrice
-	case len(new.ItemIds) != 0:
-		current.ItemIds = new.ItemIds
 	}
 
 	for _, attr := range new.ClearAttr {
 		s := reflect.ValueOf(&current).Elem()
-		if s.Kind() == reflect.Struct {
-			field := s.FieldByName(attr)
-			if field.CanSet() {
-				field.SetZero()
-			}
+		field := s.FieldByName(attr)
+		if field.CanSet() {
+			field.SetZero()
 		}
 	}
 

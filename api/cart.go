@@ -18,8 +18,6 @@ func (h *Handler) CartCreate(ctx *engine.Context) {
 		ctx.Error(http.StatusBadRequest, err.Error())
 		return
 	}
-	cart.TotalPrice = 0.0
-	cart.ItemIds = []uint32{}
 	ctx.Print(storage.CartCreate(cart))
 }
 

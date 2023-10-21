@@ -1,6 +1,6 @@
 package entity
 
-type Category struct {
+type Country struct {
 	Uuid uint32
 	Name string
 }
