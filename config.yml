@@ -63,3 +63,35 @@ api:
   AgeGroupDelete:
     method: DELETE
     url: agegroup/{id}
+
+  BrandCreate:
+    method: POST
+    url: brand
+  BrandRead:
+    method: GET
+    url: brand/{id}
+  BrandsRead:
+    method: GET
+    url: brand
+  BrandUpdate:
+    method: PUT
+    url: brand/{id}
+  BrandDelete:
+    method: DELETE
+    url: brand/{id}
+
+  CategoryCreate:
+   method: POST
+   url: category
+  CategoryRead:
+   method: GET
+   url: category/{id}
+  CategoriesRead:
+   method: GET
+   url: category
+  CategoryUpdate:
+   method: PUT
+   url: category/{id}
+  CategoryDelete:
+    method: DELETE
+    url: category/{id}

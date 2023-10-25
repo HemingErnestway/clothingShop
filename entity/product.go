@@ -15,5 +15,5 @@ type Product struct {
 	GenderId        uint32  `json:"genderId"`
 	AgeGroupId      uint32  `json:"ageGroupId"`
 	BrandId         uint32  `json:"brandId"`
-	// TODO: implement size table
+	SizeId          uint32  `json:"sizeId"`
 }
