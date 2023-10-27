@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"time"
 )
@@ -17,6 +18,7 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 	}
 
+	log.Println("Listening port :8090...")
 	err := server.ListenAndServe()
 	if err != nil {
 		panic(err)

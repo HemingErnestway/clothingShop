@@ -95,3 +95,83 @@ api:
   CategoryDelete:
     method: DELETE
     url: category/{id}
+
+  ColorCreate:
+    method: POST
+    url: color
+  ColorRead:
+    method: GET
+    url: color/{id}
+  ColorsRead:
+    method: GET
+    url: color
+  ColorUpdate:
+    method: PUT
+    url: color/{id}
+  ColorDelete:
+    method: DELETE
+    url: color/{id}
+
+  CountryCreate:
+    method: POST
+    url: country
+  CountryRead:
+    method: GET
+    url: country/{id}
+  CountriesRead:
+    method: GET
+    url: country
+  CountryUpdate:
+    method: PUT
+    url: country/{id}
+  CountryDelete:
+    method: DELETE
+    url: country/{id}
+
+  GenderCreate:
+    method: POST
+    url: gender
+  GenderRead:
+    method: GET
+    url: gender/{id}
+  GendersRead:
+    method: GET
+    url: gender
+  GenderUpdate:
+    method: PUT
+    url: gender/{id}
+  GenderDelete:
+    method: DELETE
+    url: gender/{id}
+
+  SeasonCreate:
+    method: POST
+    url: season
+  SeasonRead:
+    method: GET
+    url: season/{id}
+  SeasonsRead:
+    method: GET
+    url: season
+  SeasonUpdate:
+    method: PUT
+    url: season/{id}
+  SeasonDelete:
+    method: DELETE
+    url: season/{id}
+
+  SizeCreate:
+    method: POST
+    url: size
+  SizeRead:
+    method: GET
+    url: size/{id}
+  SizesRead:
+    method: GET
+    url: size
+  SizeUpdate:
+    method: PUT
+    url: size/{id}
+  SizeDelete:
+    method: DELETE
+    url: size/{id}
