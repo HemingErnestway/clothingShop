@@ -1,68 +1,35 @@
 package storage
 
 import (
+	"clothingShop/db"
 	"clothingShop/dto"
 	"clothingShop/entity"
 	"fmt"
 	"reflect"
-	"sync"
 )
 
-type UserMx struct {
-	mtx   sync.RWMutex
-	iter  uint32
-	users map[uint32]entity.User
-}
-
-var userMx UserMx
-
-func init() {
-	userMx = UserMx{
-		users: make(map[uint32]entity.User),
-	}
-}
-
 func UserCreate(user entity.User) *entity.User {
-	userMx.mtx.Lock()
-	defer userMx.mtx.Unlock()
-
-	userMx.iter++
-	user.Uuid = userMx.iter
-	userMx.users[userMx.iter] = user
-
+	db.DB().Create(&user)
 	return &user
 }
 
 func UserRead(id uint32) *entity.User {
-	userMx.mtx.RLock()
-	defer userMx.mtx.RUnlock()
-
-	if el, ok := userMx.users[id]; ok {
-		return &el
-	}
-
-	return nil
+	var user entity.User
+	db.DB().Table(user.TableName()).Where(
+		"uuid = ?", id).Find(&user)
+	return &user
 }
 
-func UsersRead() []entity.User {
-	userMx.mtx.RLock()
-	defer userMx.mtx.RUnlock()
-
-	userList := make([]entity.User, len(userMx.users))
-	iter := 0
-	for key := range userMx.users {
-		userList[iter] = userMx.users[key]
-		iter++
-	}
-
-	return userList
+func UsersRead() []*entity.User {
+	var users []*entity.User
+	db.DB().Find(&users)
+	return users
 }
 
 func UserUpdate(new dto.User, id uint32) *entity.User {
-	userMx.mtx.Lock()
-	defer userMx.mtx.Unlock()
-
-	current := userMx.users[id]
+	var current entity.User
+	db.DB().Table(current.TableName()).Where(
+		"uuid = ?", id).Find(&current)
 
 	currentStruct := reflect.ValueOf(&current).Elem()
 	newStruct := reflect.ValueOf(&new.User).Elem()
@@ -84,15 +51,13 @@ func UserUpdate(new dto.User, id uint32) *entity.User {
 		}
 	}
 
-	userMx.users[id] = current
-	return &current
+	db.DB().Save(&current)
+	return UserRead(id)
 }
 
 func UserDelete(id uint32) string {
-	userMx.mtx.Lock()
-	defer userMx.mtx.Unlock()
-
-	delete(userMx.users, id)
-
+	var user entity.User
+	db.DB().Table(user.TableName()).Where(
+		"uuid = ?", id).Delete(&user)
 	return "successfully deleted"
 }

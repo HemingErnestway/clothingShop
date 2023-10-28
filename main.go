@@ -1,6 +1,7 @@
 package main
 
 import (
+	"clothingShop/db"
 	"log"
 	"net/http"
 	"time"
@@ -17,6 +18,9 @@ func main() {
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
+
+	db.Connect()
+	db.Migrate()
 
 	log.Println("Listening port :8090...")
 	err := server.ListenAndServe()

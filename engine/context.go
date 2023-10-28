@@ -24,7 +24,7 @@ func (c *Context) Error(status int, msg string) {
 	c.Response.Write(errorMarshal)
 }
 
-func (c *Context) Print(data any) {
+func (c *Context) Print(data interface{}) {
 	c.Response.Header().Set("Content-Type", "application/json")
 	dataMarshal, _ := json.Marshal(data)
 	c.Response.Write(dataMarshal)
