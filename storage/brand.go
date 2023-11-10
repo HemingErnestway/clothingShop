@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"clothingShop/db"
 	"clothingShop/entity"
 	"sync"
 )
@@ -11,68 +12,36 @@ type BrandMx struct {
 	brands map[uint32]entity.Brand
 }
 
-var brandMx BrandMx
-
-func init() {
-	brandMx = BrandMx{
-		brands: make(map[uint32]entity.Brand),
-	}
-}
-
 func BrandCreate(brand entity.Brand) *entity.Brand {
-	cartMx.mtx.Lock()
-	defer cartMx.mtx.Unlock()
-
-	brandMx.iter++
-	brand.Uuid = brandMx.iter
-	brandMx.brands[brandMx.iter] = brand
-
+	db.DB().Create(&brand)
 	return &brand
 }
 
 func BrandRead(id uint32) *entity.Brand {
-	brandMx.mtx.RLock()
-	defer brandMx.mtx.RUnlock()
-
-	if el, ok := brandMx.brands[id]; ok {
-		return &el
-	}
-
-	return nil
+	var brand entity.Brand
+	db.DB().Table(brand.TableName()).Where(
+		"uuid = ?", id).Find(&brand)
+	return &brand
 }
 
-func BrandsRead() []entity.Brand {
-	brandMx.mtx.RLock()
-	defer brandMx.mtx.RUnlock()
-
-	brandList := make([]entity.Brand, len(brandMx.brands))
-	iter := 0
-	for key := range brandMx.brands {
-		brandList[iter] = brandMx.brands[key]
-		iter++
-	}
-
-	return brandList
+func BrandsRead() []*entity.Brand {
+	var brands []*entity.Brand
+	db.DB().Find(&brands)
+	return brands
 }
 
 func BrandUpdate(new entity.Brand, id uint32) *entity.Brand {
-	brandMx.mtx.Lock()
-	defer brandMx.mtx.Unlock()
+	var current entity.Brand
+	db.DB().Table(current.TableName()).Where(
+		"uuid = ?", id).Find(&current)
 
-	current := brandMx.brands[id]
-
-	if new.Name != "" {
-		current.Name = new.Name
-	}
-
-	brandMx.brands[id] = current
-	return &current
+	db.DB().Save(&current)
+	return BrandRead(id)
 }
 
 func BrandDelete(id uint32) string {
-	brandMx.mtx.Lock()
-	defer brandMx.mtx.Unlock()
-	delete(brandMx.brands, id)
-
+	var brand entity.Brand
+	db.DB().Table(brand.TableName()).Where(
+		"uuid = ?", id).Delete(&brand)
 	return "successfully deleted"
 }
