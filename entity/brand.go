@@ -3,7 +3,7 @@ package entity
 import "clothingShop/db"
 
 type Brand struct {
-	Uuid uint32 `json:"uuid" gorm:"primaryKay"`
+	Uuid uint32 `json:"uuid" gorm:"primaryKey"`
 	Name string `json:"name"`
 }
 
