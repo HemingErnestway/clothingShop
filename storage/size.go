@@ -1,78 +1,44 @@
 package storage
 
 import (
+	"clothingShop/db"
 	"clothingShop/entity"
-	"sync"
 )
 
-type SizeMx struct {
-	mtx   sync.RWMutex
-	iter  uint32
-	sizes map[uint32]entity.Size
-}
-
-var sizeMx SizeMx
-
-func init() {
-	sizeMx = SizeMx{
-		sizes: make(map[uint32]entity.Size),
-	}
-}
-
 func SizeCreate(size entity.Size) *entity.Size {
-	cartMx.mtx.Lock()
-	defer cartMx.mtx.Unlock()
-
-	sizeMx.iter++
-	size.Uuid = sizeMx.iter
-	sizeMx.sizes[sizeMx.iter] = size
-
+	db.DB().Create(&size)
 	return &size
 }
 
 func SizeRead(id uint32) *entity.Size {
-	sizeMx.mtx.RLock()
-	defer sizeMx.mtx.RUnlock()
-
-	if el, ok := sizeMx.sizes[id]; ok {
-		return &el
-	}
-
-	return nil
+	var size entity.Size
+	db.DB().Table(size.TableName()).Where(
+		"uuid = ?", id).Find(&size)
+	return &size
 }
 
-func SizesRead() []entity.Size {
-	sizeMx.mtx.RLock()
-	defer sizeMx.mtx.RUnlock()
-
-	sizeList := make([]entity.Size, len(sizeMx.sizes))
-	iter := 0
-	for key := range sizeMx.sizes {
-		sizeList[iter] = sizeMx.sizes[key]
-		iter++
-	}
-
-	return sizeList
+func SizesRead() []*entity.Size {
+	var sizes []*entity.Size
+	db.DB().Find(&sizes)
+	return sizes
 }
 
 func SizeUpdate(new entity.Size, id uint32) *entity.Size {
-	sizeMx.mtx.Lock()
-	defer sizeMx.mtx.Unlock()
-
-	current := sizeMx.sizes[id]
+	var current entity.Size
+	db.DB().Table(current.TableName()).Where(
+		"uuid = ?", id).Find(&current)
 
 	if new.Name != "" {
 		current.Name = new.Name
 	}
 
-	sizeMx.sizes[id] = current
-	return &current
+	db.DB().Save(&current)
+	return SizeRead(id)
 }
 
 func SizeDelete(id uint32) string {
-	sizeMx.mtx.Lock()
-	defer sizeMx.mtx.Unlock()
-	delete(sizeMx.sizes, id)
-
+	var size entity.Size
+	db.DB().Table(size.TableName()).Where(
+		"uuid = ?", id).Delete(&size)
 	return "successfully deleted"
 }

@@ -1,78 +1,44 @@
 package storage
 
 import (
+	"clothingShop/db"
 	"clothingShop/entity"
-	"sync"
 )
 
-type ColorMx struct {
-	mtx    sync.RWMutex
-	iter   uint32
-	colors map[uint32]entity.Color
-}
-
-var colorMx ColorMx
-
-func init() {
-	colorMx = ColorMx{
-		colors: make(map[uint32]entity.Color),
-	}
-}
-
 func ColorCreate(color entity.Color) *entity.Color {
-	cartMx.mtx.Lock()
-	defer cartMx.mtx.Unlock()
-
-	colorMx.iter++
-	color.Uuid = colorMx.iter
-	colorMx.colors[colorMx.iter] = color
-
+	db.DB().Create(&color)
 	return &color
 }
 
 func ColorRead(id uint32) *entity.Color {
-	colorMx.mtx.RLock()
-	defer colorMx.mtx.RUnlock()
-
-	if el, ok := colorMx.colors[id]; ok {
-		return &el
-	}
-
-	return nil
+	var color entity.Color
+	db.DB().Table(color.TableName()).Where(
+		"uuid = ?", id).Find(&color)
+	return &color
 }
 
-func ColorsRead() []entity.Color {
-	colorMx.mtx.RLock()
-	defer colorMx.mtx.RUnlock()
-
-	colorList := make([]entity.Color, len(colorMx.colors))
-	iter := 0
-	for key := range colorMx.colors {
-		colorList[iter] = colorMx.colors[key]
-		iter++
-	}
-
-	return colorList
+func ColorsRead() []*entity.Color {
+	var colors []*entity.Color
+	db.DB().Find(&colors)
+	return colors
 }
 
 func ColorUpdate(new entity.Color, id uint32) *entity.Color {
-	colorMx.mtx.Lock()
-	defer colorMx.mtx.Unlock()
-
-	current := colorMx.colors[id]
+	var current entity.Color
+	db.DB().Table(current.TableName()).Where(
+		"uuid = ?", id).Find(&current)
 
 	if new.Name != "" {
 		current.Name = new.Name
 	}
 
-	colorMx.colors[id] = current
-	return &current
+	db.DB().Save(&current)
+	return ColorRead(id)
 }
 
 func ColorDelete(id uint32) string {
-	colorMx.mtx.Lock()
-	defer colorMx.mtx.Unlock()
-	delete(colorMx.colors, id)
-
+	var color entity.Color
+	db.DB().Table(color.TableName()).Where(
+		"uuid = ?", id).Delete(&color)
 	return "successfully deleted"
 }

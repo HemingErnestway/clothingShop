@@ -1,78 +1,44 @@
 package storage
 
 import (
+	"clothingShop/db"
 	"clothingShop/entity"
-	"sync"
 )
 
-type SeasonMx struct {
-	mtx     sync.RWMutex
-	iter    uint32
-	seasons map[uint32]entity.Season
-}
-
-var seasonMx SeasonMx
-
-func init() {
-	seasonMx = SeasonMx{
-		seasons: make(map[uint32]entity.Season),
-	}
-}
-
 func SeasonCreate(season entity.Season) *entity.Season {
-	cartMx.mtx.Lock()
-	defer cartMx.mtx.Unlock()
-
-	seasonMx.iter++
-	season.Uuid = seasonMx.iter
-	seasonMx.seasons[seasonMx.iter] = season
-
+	db.DB().Create(&season)
 	return &season
 }
 
 func SeasonRead(id uint32) *entity.Season {
-	seasonMx.mtx.RLock()
-	defer seasonMx.mtx.RUnlock()
-
-	if el, ok := seasonMx.seasons[id]; ok {
-		return &el
-	}
-
-	return nil
+	var season entity.Season
+	db.DB().Table(season.TableName()).Where(
+		"uuid = ?", id).Find(&season)
+	return &season
 }
 
-func SeasonsRead() []entity.Season {
-	seasonMx.mtx.RLock()
-	defer seasonMx.mtx.RUnlock()
-
-	seasonList := make([]entity.Season, len(seasonMx.seasons))
-	iter := 0
-	for key := range seasonMx.seasons {
-		seasonList[iter] = seasonMx.seasons[key]
-		iter++
-	}
-
-	return seasonList
+func SeasonsRead() []*entity.Season {
+	var seasons []*entity.Season
+	db.DB().Find(&seasons)
+	return seasons
 }
 
 func SeasonUpdate(new entity.Season, id uint32) *entity.Season {
-	seasonMx.mtx.Lock()
-	defer seasonMx.mtx.Unlock()
-
-	current := seasonMx.seasons[id]
+	var current entity.Season
+	db.DB().Table(current.TableName()).Where(
+		"uuid = ?", id).Find(&current)
 
 	if new.Name != "" {
 		current.Name = new.Name
 	}
 
-	seasonMx.seasons[id] = current
-	return &current
+	db.DB().Save(&current)
+	return SeasonRead(id)
 }
 
 func SeasonDelete(id uint32) string {
-	seasonMx.mtx.Lock()
-	defer seasonMx.mtx.Unlock()
-	delete(seasonMx.seasons, id)
-
+	var season entity.Season
+	db.DB().Table(season.TableName()).Where(
+		"uuid = ?", id).Delete(&season)
 	return "successfully deleted"
 }

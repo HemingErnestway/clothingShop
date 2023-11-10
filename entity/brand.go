@@ -7,7 +7,7 @@ type Brand struct {
 	Name string `json:"name"`
 }
 
-func (u *Brand) TableName() string {
+func (b *Brand) TableName() string {
 	return "brand"
 }
 
