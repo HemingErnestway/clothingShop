@@ -1,79 +1,44 @@
 package storage
 
 import (
+	"clothingShop/db"
 	"clothingShop/entity"
-	"sync"
 )
 
-type AgeGroupMx struct {
-	mtx       sync.RWMutex
-	iter      uint32
-	ageGroups map[uint32]entity.AgeGroup
-}
-
-var ageGroupMx AgeGroupMx
-
-func init() {
-	ageGroupMx = AgeGroupMx{
-		ageGroups: make(map[uint32]entity.AgeGroup),
-	}
-}
-
 func AgeGroupCreate(ageGroup entity.AgeGroup) *entity.AgeGroup {
-	cartMx.mtx.Lock()
-	defer cartMx.mtx.Unlock()
-
-	ageGroupMx.iter++
-	ageGroup.Uuid = ageGroupMx.iter
-	ageGroupMx.ageGroups[ageGroupMx.iter] = ageGroup
-
+	db.DB().Create(&ageGroup)
 	return &ageGroup
 }
 
 func AgeGroupRead(id uint32) *entity.AgeGroup {
-	ageGroupMx.mtx.RLock()
-	defer ageGroupMx.mtx.RUnlock()
-
-	if el, ok := ageGroupMx.ageGroups[id]; ok {
-		return &el
-	}
-
-	return nil
+	var ageGroup entity.AgeGroup
+	db.DB().Table(ageGroup.TableName()).Where(
+		"uuid = ?", id).Find(&ageGroup)
+	return &ageGroup
 }
 
-func AgeGroupsRead() []entity.AgeGroup {
-	ageGroupMx.mtx.RLock()
-	defer ageGroupMx.mtx.RUnlock()
-
-	ageGroupList := make([]entity.AgeGroup, len(ageGroupMx.ageGroups))
-	iter := 0
-	for key := range ageGroupMx.ageGroups {
-		ageGroupList[iter] = ageGroupMx.ageGroups[key]
-		iter++
-	}
-
-	return ageGroupList
+func AgeGroupsRead() []*entity.AgeGroup {
+	var ageGroups []*entity.AgeGroup
+	db.DB().Find(&ageGroups)
+	return ageGroups
 }
 
 func AgeGroupUpdate(new entity.AgeGroup, id uint32) *entity.AgeGroup {
-	ageGroupMx.mtx.Lock()
-	defer ageGroupMx.mtx.Unlock()
-
-	current := ageGroupMx.ageGroups[id]
+	var current entity.AgeGroup
+	db.DB().Table(current.TableName()).Where(
+		"uuid = ?", id).Find(&current)
 
 	if new.Name != "" {
 		current.Name = new.Name
 	}
 
-	ageGroupMx.ageGroups[id] = current
-	return &current
+	db.DB().Save(&current)
+	return AgeGroupRead(id)
 }
 
 func AgeGroupDelete(id uint32) string {
-	ageGroupMx.mtx.Lock()
-	defer ageGroupMx.mtx.Unlock()
-
-	delete(ageGroupMx.ageGroups, id)
-
+	var ageGroup entity.AgeGroup
+	db.DB().Table(ageGroup.TableName()).Where(
+		"uuid = ?", id).Delete(&ageGroup)
 	return "successfully deleted"
 }
