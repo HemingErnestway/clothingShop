@@ -18,6 +18,9 @@ api:
   UserDelete:
     method: DELETE
     url: user/{id}
+  UserAuth:
+    method: POST
+    url: login
 
   ProductCreate:
     method: POST
@@ -175,3 +178,9 @@ api:
   SizeDelete:
     method: DELETE
     url: size/{id}
+
+accessExceptions:
+  list:
+    - ProductRead
+    - ProductsRead
+    - UserAuth

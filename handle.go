@@ -3,23 +3,35 @@ package main
 import (
 	"clothingShop/api"
 	"clothingShop/config"
+	"clothingShop/db"
 	"clothingShop/engine"
+	"clothingShop/entity"
+	"log"
 	"net/http"
 	"reflect"
+	"slices"
 	"strings"
+	"time"
 )
+
+type Info struct {
+	Name   string
+	Access string
+	Link   reflect.Value
+}
 
 var types map[string]bool
 var hdl *api.Handler
-var apiMap map[string]map[string]reflect.Value
+var apiMap map[string]map[string]Info
+var accessExceptions []string
 
 func init() {
 	cfg := config.Get()
-	apiMap = make(map[string]map[string]reflect.Value)
-	apiMap["POST"] = make(map[string]reflect.Value)
-	apiMap["PUT"] = make(map[string]reflect.Value)
-	apiMap["DELETE"] = make(map[string]reflect.Value)
-	apiMap["GET"] = make(map[string]reflect.Value)
+	apiMap = make(map[string]map[string]Info)
+	apiMap["POST"] = make(map[string]Info)
+	apiMap["PUT"] = make(map[string]Info)
+	apiMap["DELETE"] = make(map[string]Info)
+	apiMap["GET"] = make(map[string]Info)
 	maps := cfg.Api
 
 	types = make(map[string]bool)
@@ -42,9 +54,14 @@ func init() {
 		if _, ok := apiMap[val.Method]; !ok {
 
 		}
-		apiMap[val.Method][val.Url] = services.Method(methodNum)
+		apiMap[val.Method][val.Url] = Info{
+			Name:   method.Name,
+			Access: "",
+			Link:   services.Method(methodNum),
+		}
 	}
 
+	accessExceptions = cfg.List
 }
 
 func mainHandle(w http.ResponseWriter, r *http.Request) {
@@ -63,12 +80,6 @@ func mainHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//last := pathArr[(len(pathArr) - 1)]
-	//str := last[strings.LastIndex(last, "."):]
-	//if len(last) > 3 && types[str] {
-	//	sendFile("tpl/index.html", ctx)
-	//}
-
 	maps, ok := apiMap[r.Method]
 	if !ok {
 		w.Write([]byte("No such method"))
@@ -79,11 +90,28 @@ func mainHandle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if fun, ok := maps[pathName]; ok {
-		in := make([]reflect.Value, 1)
-		in[0] = reflect.ValueOf(&ctx)
-		//fmt.Println(pathName)
-		fun.Call(in)
+		if slices.Contains(accessExceptions, fun.Name) || checkAccess(r.Header) {
+			in := make([]reflect.Value, 1)
+			in[0] = reflect.ValueOf(&ctx)
+			fun.Link.Call(in)
+		} else {
+			log.Println("Forbidden")
+		}
 	}
+}
+
+func checkAccess(h http.Header) bool {
+	authStr := h.Get("Authorization")
+
+	if len(authStr) < 1 {
+		return false
+	}
+
+	var token entity.Token
+	db.DB().Where("token = ? and expired > ?",
+		authStr, time.Now()).First(&token)
+
+	return token.Tid != 0
 }
 
 func sendFile(url string, ctx engine.Context) {

@@ -16,9 +16,14 @@ type Service struct {
 	Url    string
 }
 
+type AccessExceptions struct {
+	List []string
+}
+
 type Config struct {
 	Server
-	Api map[string]Service
+	Api              map[string]Service
+	AccessExceptions `yaml:"accessExceptions"`
 }
 
 var config Config

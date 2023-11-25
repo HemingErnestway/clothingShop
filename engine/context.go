@@ -29,3 +29,10 @@ func (c *Context) Print(data interface{}) {
 	dataMarshal, _ := json.Marshal(data)
 	c.Response.Write(dataMarshal)
 }
+
+func ToStruct[T any](ctx *Context) (T, error) {
+	decoder := json.NewDecoder(ctx.Request.Body)
+	var data T
+	err := decoder.Decode(&data)
+	return data, err
+}

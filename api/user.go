@@ -1,15 +1,18 @@
 package api
 
 import (
+	"clothingShop/db"
 	"clothingShop/dto"
 	"clothingShop/engine"
 	"clothingShop/entity"
 	"clothingShop/storage"
 	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func GetIdFromContext(ctx *engine.Context) uint32 {
@@ -57,4 +60,29 @@ func (h *Handler) UserUpdate(ctx *engine.Context) {
 func (h *Handler) UserDelete(ctx *engine.Context) {
 	id := GetIdFromContext(ctx)
 	ctx.Print(storage.UserDelete(id))
+}
+
+func (h *Handler) UserAuth(ctx *engine.Context) {
+	userDto, err := engine.ToStruct[dto.UserAuth](ctx)
+	if err != nil {
+		ctx.Error(400, "Bad user data")
+	}
+
+	var user entity.User
+	db.DB().Table(user.TableName()).Where("login = ? and password = ?",
+		userDto.Login, userDto.Password).Find(&user)
+
+	if user.Uuid == 0 {
+		ctx.Error(401, "Bad auth")
+		return
+	}
+
+	token := entity.Token{
+		Uid:     user.Uuid,
+		Token:   uuid.NewString(),
+		Expired: time.Now().Add(1 * time.Hour),
+	}
+
+	db.DB().Save(&token)
+	ctx.Print(token)
 }
