@@ -28,6 +28,8 @@ func (c *Context) Print(data interface{}) {
 	c.Response.Header().Set("Content-Type", "application/json")
 	c.Response.Header().Set("Access-Control-Allow-Origin", "*")
 	c.Response.Header().Set("Access-Control-Allow-Headers", "*")
+	c.Response.Header().Set("Access-Control-Expose-Headers", "*")
+	c.Response.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, DELETE, PUT")
 	dataMarshal, _ := json.Marshal(data)
 	c.Response.Write(dataMarshal)
 }

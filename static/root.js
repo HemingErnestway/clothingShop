@@ -36,6 +36,7 @@ function Main() {
         if (util.emptyToken()) {
             this.auth()
         }
+        this.getUsers()
     }
 
     this.auth = () => {
@@ -43,54 +44,16 @@ function Main() {
     }
 
     this.getUsers = () => {
-        // util.get("http://localhost:8090/user", info => {
-        //     if (info.error && info.error === "invalid_verifier") {
-        //         console.log("invalid verifier")
-        //         this.auth()
-        //         return
-        //     }
-        //     this.users = info
-        //     this.view()
-        // })
-        this.users = [
-            {
-                "uuid": 3,
-                "name": "Ivan3",
-                "surname": "Ivanov",
-                "email": "ivan@example.com",
-                "address": "Example, Address, 123, 32",
-                "bonusPoints": 0,
-                "birthDate": "31/01/2002",
-                "login": "ivan2003",
-                "password": "qwert123",
-                "access": 0
-            },
-            {
-                "uuid": 2,
-                "name": "Petya",
-                "surname": "Ivanov",
-                "email": "ivan@example.com",
-                "address": "Example, Address, 123, 32",
-                "bonusPoints": 0,
-                "birthDate": "31/01/2002",
-                "login": "ivan2003",
-                "password": "qwert123",
-                "access": 0
-            },
-            {
-                "uuid": 5,
-                "name": "vasya",
-                "surname": "vasyin",
-                "email": "vv@mail.com",
-                "address": "huh puh 123",
-                "bonusPoints": 0,
-                "birthDate": "12/12/1321",
-                "login": "vavava123",
-                "password": "qwerty",
-                "access": 0
+        util.get("http://localhost:8090/user", info => {
+            console.log(info)
+            if (info.error && info.error === "invalid_verifier") {
+                console.log("invalid verifier")
+                this.auth()
+                return
             }
-        ]
-        this.view()
+            this.users = info
+            this.view()
+        })
     }
 
     this.view = () => {
@@ -100,24 +63,29 @@ function Main() {
         const users_str = this.users.map(st =>
             util.parse(util.tpl.tr, st)).join("")
         console.log(users_str)
-        util.id("root").innerHTML = util.parse(util.tpl.table, {
-            users: users_str,
-        })
+        console.log(util.parse(util.tpl.table, {users: users_str}))
+        util.id("root").innerHTML
+            = util.parse(util.tpl.table, {users: users_str})
     }
+
     this.authIn = () => {
         util.modal("auth", "hide")
-        util.post("/login", {
+        let strData = JSON.stringify({
             login: util.id("authLogin").value,
             password: util.id("authPassword").value,
-        }, resp => {
+        })
+        return util.post("/login", strData, resp => {
             if (resp.error) {
                 this.auth()
                 return
             }
+            console.log(resp)
             util.setUser(resp)
             this.getUsers()
         })
     }
+
     this.init()
 }
+
 const main = new Main()

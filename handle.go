@@ -40,6 +40,7 @@ func init() {
 	types[".html"] = true
 	types[".js"] = true
 	types[".svg"] = true
+	types[".css"] = true
 
 	hdl = &api.Handler{}
 	services := reflect.ValueOf(hdl)
@@ -76,7 +77,12 @@ func mainHandle(w http.ResponseWriter, r *http.Request) {
 	pathName := pathArr[0]
 
 	if pathArr[0] == "" {
-		sendFile("index.html", ctx)
+		sendFile("./static/index.html", ctx)
+		return
+	}
+
+	if staticUrl, ok := static(path); ok {
+		sendFile("./static/"+staticUrl, ctx)
 		return
 	}
 
@@ -114,6 +120,18 @@ func checkAccess(h http.Header) bool {
 	return token.Tid != 0
 }
 
-func sendFile(url string, ctx engine.Context) {
-	ctx.Response.Write([]byte{})
+func static(path string) (string, bool) {
+	splitPath := strings.Split(path, "/")
+	fileName := splitPath[len(splitPath)-1]
+	splitName := strings.Split(fileName, ".")
+	fileExt := "." + splitName[len(splitName)-1]
+	if types[fileExt] {
+		return path, true
+	}
+	return "", false
+}
+
+func sendFile(path string, ctx engine.Context) {
+	//ctx.Response.Write([]byte{})
+	http.ServeFile(ctx.Response, ctx.Request, path)
 }

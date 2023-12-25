@@ -184,8 +184,6 @@ accessExceptions:
     - ProductRead
     - ProductsRead
     - UserAuth
-    - UserCreate
-    - UsersRead
 
 template:
   url: static

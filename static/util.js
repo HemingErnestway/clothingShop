@@ -17,7 +17,12 @@ function Util() {
                 "Content-type": "application/json",
                 "Authorization": token,
             }
-        }).then(data => data.json()).then(callback)
+        })
+            .then(data => {
+                console.log(data)
+                return data.json()
+            })
+            .then(callback)
     }
 
     this.post = (url, data, callback) => {
@@ -67,86 +72,38 @@ function Util() {
             if (param[str] === undefined) {
                 return ''
             }
-            return param
+            return param[str]
         })
     }
 
-//     this.tpl = {
-//         table: `
-// <button type="button" class="btn btn-primary action"></button>
-// <table class="table">
-//     <tr>
-//         <th>Id</th>
-//         <th>Name</th>
-//         <th>Surname</th>
-//         <th>Email</th>
-//         <th>Address</th>
-//         <th>Bonus Points</th>
-//         <th>Birth Date</th>
-//         <th>Login</th>
-//         <th>Password</th>
-//         <th>Access</th>
-//     </tr>
-//         {{users}}
-// </table>`,
-//         tr: `
-//     <tr>
-//         <th>{{uuid}}</th>
-//         <th>{{name}}</th>
-//         <th>{{surname}}</th>
-//         <th>{{email}}</th>
-//         <th>{{address}}</th>
-//         <th>{{bonus_points}}</th>
-//         <th>{{birth_date}}</th>
-//         <th>{{login}}</th>
-//         <th>{{password}}</th>
-//         <th>{{access}}</th>
-//     </tr>`
-//     }
-
     this.tpl = {
         table: `
-<button type="button" className="btn btn-success action" data-action="add">Create</button>
-<div className="col-12">
-    <table className="table table-bordered">
-        <thead>
+<div class="container">
+  <div class="row">
+  <button type="button" class="btn btn-success action" data-action="add">Create</button>
+  <div class="col-12">
+    <table class="table table-bordered">
+      <thead>
         <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Name</th>
-            <th scope="col">Surname</th>
-            <th scope="col">Email</th>
-            <th scope="col">Address</th>
-            <th scope="col">Bonus Points</th>
-            <th scope="col">Birth Date</th>
-            <th scope="col">Login</th>
-            <th scope="col">Password</th>
-            <th scope="col">Access</th>
-            <th scope="col">Actions</th>
+          <th scope="col">Id</th>
+          <th scope="col">Name</th>
+          <th scope="col">Surname</th>
+          <th scope="col">Email</th>
+          <th scope="col">Address</th>
+          <th scope="col">Bonus Points</th>
+          <th scope="col">Birth Date</th>
+          <th scope="col">Login</th>
+          <th scope="col">Password</th>
+          <th scope="col">Access</th>
+          <th scope="col">Actions</th>
         </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td>Иван</td>
-            <td>Иванов</td>
-            <td>example@google.com</td>
-            <td>Example, Address, 123, 32</td>
-            <td>123</td>
-            <td>31/01/2002</td>
-            <td>ivan1234</td>
-            <td>password</td>
-            <td>0</td>
-            <td>
-                <button type="button" className="btn btn-primary" data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasright" aria-controls="offcanvasright" onClick="main.edit(1)">Edit
-                </button>
-                <button type="button" className="btn btn-danger" data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasright" aria-controls="offcanvasright" onClick="main.rm(1)">Delete
-                </button>
-            </td>
-        </tr>
-        </tbody>
+      </thead>
+      <tbody id="tableContent">
+        {{users}}
+      </tbody>
     </table>
+  </div>
+  </div>
 </div>
         `,
         tr: `
