@@ -10,24 +10,18 @@ function Util() {
     }
 
     this.get = (url, callback) => {
+        console.log(token)
         fetch(url, {
-            mode: "no-cors",
             method: "GET",
             headers: {
                 "Content-type": "application/json",
                 "Authorization": token,
             }
-        })
-            .then(data => {
-                console.log(data)
-                return data.json()
-            })
-            .then(callback)
+        }).then(data => data.json()).then(callback)
     }
 
     this.post = (url, data, callback) => {
         fetch(url, {
-            mode: "no-cors",
             method: "POST",
             body: data,
             headers: {
@@ -35,7 +29,26 @@ function Util() {
                 "Authorization": token,
             }
         }).then(data => data.json()).then(callback)
+    }
 
+    this.put = (url, data, callback) => {
+        fetch(url, {
+            method: "PUT",
+            body: data,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+            }
+        }).then(data => data.json()).then(callback)
+    }
+
+    this.delete = (url, callback) => {
+        fetch(url, {
+            method: "DELETE",
+            headers: {
+                "Authorization": token,
+            }
+        }).then(data => data.json()).then(callback)
     }
 
     this.id = el => {
@@ -80,7 +93,12 @@ function Util() {
         table: `
 <div class="container">
   <div class="row">
-  <button type="button" class="btn btn-success action" data-action="add">Create</button>
+  <button type="button" 
+          class="btn btn-success action col-1"  
+          data-action="add"
+          onClick="main.userCreate()">Create
+  </button>
+  
   <div class="col-12">
     <table class="table table-bordered">
       <thead>
@@ -90,8 +108,8 @@ function Util() {
           <th scope="col">Surname</th>
           <th scope="col">Email</th>
           <th scope="col">Address</th>
-          <th scope="col">Bonus Points</th>
-          <th scope="col">Birth Date</th>
+          <th scope="col">BP</th>
+          <th scope="col">B-Date</th>
           <th scope="col">Login</th>
           <th scope="col">Password</th>
           <th scope="col">Access</th>
@@ -119,11 +137,19 @@ function Util() {
     <td>{{password}}</td>
     <td>{{access}}</td>
     <td>
-        <button type="button" className="btn btn-primary" data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasright" aria-controls="offcanvasright" onClick="main.edit({{uuid}})">Edit
+        <button type="button" 
+                class="btn btn-primary" 
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasright" 
+                aria-controls="offcanvasright" 
+                onClick="main.userEdit({{uuid}})">Edit
         </button>
-        <button type="button" className="btn btn-danger" data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasright" aria-controls="offcanvasright" onClick="main.rm({{uuid}})">Delete
+        <button type="button" 
+                class="btn btn-danger" 
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasright" 
+                aria-controls="offcanvasright" 
+                onClick="main.userDelete({{uuid}})">Delete
         </button>
     </td>
 </tr>

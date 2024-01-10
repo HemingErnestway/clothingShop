@@ -109,6 +109,8 @@ func mainHandle(w http.ResponseWriter, r *http.Request) {
 func checkAccess(h http.Header) bool {
 	authStr := h.Get("Authorization")
 
+	log.Println(authStr)
+
 	if len(authStr) < 1 {
 		return false
 	}

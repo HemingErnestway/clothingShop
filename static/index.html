@@ -17,11 +17,17 @@
 </head>
 
 <body>
-<div id="root">
 
+<h1>Admin Panel</h1>
+
+<div id="root">
 <div class="container">
   <div class="row">
-    <button type="button" class="btn btn-success action" data-action="add">Create</button>
+    <button type="button"
+            class="btn btn-success action col-1"
+            data-action="add"
+            onClick="main.userCreate()">Create</button>
+
     <div class="col-12">
       <table class="table table-bordered">
         <thead>
@@ -51,20 +57,42 @@
 <!-- userCreate -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="userCreate" aria-labelledby="offcanvasRightLabel">
   <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="userCreateLabel">User Create</h5>
+    <h5 class="offcanvas-title" id="userCreateLabel">Add User</h5>
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body">
     <form id="userCreateForm">
-      <input name="name" placeholder="name"/>
-      <input name="surname" placeholder="surname"/>
-      <input name="email" placeholder="email"/>
-      <input name="address" placeholder="address"/>
-      <input name="birthDate" placeholder="birthDate"/>
-      <input name="login" placeholder="login"/>
-      <input name="password" placeholder="password"/>
+      <input id="userCreateName" name="name" placeholder="name"/>
+      <input id="userCreateSurname" name="surname" placeholder="surname"/>
+      <input id="userCreateEmail" name="email" placeholder="email"/>
+      <input id="userCreateAddress" name="address" placeholder="address"/>
+      <input id="userCreateBirthDate" name="birthDate" placeholder="birthDate"/>
+      <input id="userCreateLogin" name="login" placeholder="login"/>
+      <input id="userCreatePassword" name="password" placeholder="password"/>
     </form>
-    <button type="button" class="btn btn-success" onclick="main.save()">Submit</button>
+    <button type="button" class="btn btn-success" onclick="main.userCreateSave()">Submit</button>
+  </div>
+</div>
+
+<!-- userUpdate -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="userUpdate" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="userUpdateLabel">Edit User</h5>
+    <button type="button" class="btn-lose" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <form id="userUpdateForm">
+      <input id="userUpdateName" name="name" placeholder="name"/>
+      <input id="userUpdateSurname" name="surname" placeholder="surname"/>
+      <input id="userUpdateEmail" name="email" placeholder="email"/>
+      <input id="userUpdateAddress" name="address" placeholder="address"/>
+      <input id="userUpdateBonusPoints" name="bonusPoints" placeholder="bonusPoints"/>
+      <input id="userUpdateBirthDate" name="birthDate" placeholder="birthDate"/>
+      <input id="userUpdateLogin" name="login" placeholder="login"/>
+      <input id="userUpdatePassword" name="password" placeholder="password"/>
+      <input id="userUpdateAccess" name="access" placeholder="access"/>
+    </form>
+    <button type="button" class="btn btn-success" onclick="main.userUpdateSave()">Submit</button>
   </div>
 </div>
 
