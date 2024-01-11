@@ -89,7 +89,7 @@ function Util() {
         })
     }
 
-    this.tpl = {
+    this.tplUsers = {
         table: `
 <div class="container">
   <div class="row">
@@ -144,12 +144,87 @@ function Util() {
                 aria-controls="offcanvasright" 
                 onClick="main.userEdit({{uuid}})">Edit
         </button>
+        
         <button type="button" 
                 class="btn btn-danger" 
                 data-bs-toggle="offcanvas"
                 data-bs-target="#offcanvasright" 
                 aria-controls="offcanvasright" 
                 onClick="main.userDelete({{uuid}})">Delete
+        </button>
+    </td>
+</tr>
+        `
+    }
+
+    this.tplProducts = {
+        table: `
+<div class="container">
+  <div class="row">
+  <button type="button" 
+          class="btn btn-success action col-1"  
+          data-action="add"
+          onClick="main.productCreate()">Create
+  </button>
+  
+  <div class="col-12">
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Name</th>
+        <th scope="col">Description</th>
+        <th scope="col">Price</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Category</th>
+        <th scope="col">Season</th>
+        <th scope="col">Color</th>
+        <th scope="col">Country</th>
+        <th scope="col">Gender</th>
+        <th scope="col">Age Group</th>
+        <th scope="col">Brand</th>
+        <th scope="col">Size</th>
+        <th scope="col">Actions</th>
+      </tr>
+      </thead>
+      <tbody id="tableContent">
+        {{products}}
+      </tbody>
+    </table>
+  </div>
+  </div>
+</div>
+        `,
+        tr: `
+<tr>
+    <th scope="row">{{uuid}}</th>
+    <td>{{name}}</td>
+    <td>{{description}}</td>
+    <td>{{price}}</td>
+    <td>{{quantity}}</td>
+    <td>{{categoryId}}</td>
+    <td>{{seasonId}}</td>
+    <td>{{colorId}}</td>
+    <td>{{countryId}}</td>
+    <td>{{genderId}}</td>
+    <td>{{ageGroupId}}</td>
+    <td>{{brandId}}</td>
+    <td>{{sizeId}}</td>
+    <td>
+        <button type="button" 
+                class="btn btn-primary" 
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasright" 
+                aria-controls="offcanvasright" 
+                onClick="main.productEdit({{uuid}})">Edit
+        </button>
+        
+        <button type="button" 
+                class="btn btn-danger" 
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasright" 
+                aria-controls="offcanvasright" 
+                onClick="main.productDelete({{uuid}})">Delete
         </button>
     </td>
 </tr>

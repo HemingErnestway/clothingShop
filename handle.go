@@ -35,7 +35,6 @@ func init() {
 	maps := cfg.Api
 
 	types = make(map[string]bool)
-	types[".ico"] = true
 	types[".png"] = true
 	types[".html"] = true
 	types[".js"] = true
